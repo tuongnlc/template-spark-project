@@ -1,0 +1,6 @@
+---
+kind: ExampleConfig
+spec: 
+  example_param: "test-value"
+  example_param2: "test-value2"
+  example_param3: "test-value3"

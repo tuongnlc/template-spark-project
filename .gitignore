@@ -51,11 +51,19 @@ htmlcov/
 *.log
 *.sqlite3
 
-*.ipynb_checkpoints
 .ipynb_checkpoints/
 
 .vscode/
 .idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+.DS_Store
+.AppleDouble
+._*
+Thumbs.db
 
 metastore_db/
 derby.log
