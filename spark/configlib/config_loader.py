@@ -6,23 +6,26 @@ import yaml
 from typing import Any
 from spark.configlib.parser.delta import DeltaTableConfig
 from spark.configlib.parser.example import ExampleConfig
+from spark.configlib.parser.silver_job import SilverJobConfig
+
 from dacite import from_dict
 
 
 CONFIG_PARSER_MAP = {
     DeltaTableConfig.__name__: DeltaTableConfig,
     ExampleConfig.__name__: ExampleConfig,
+    SilverJobConfig.__name__: SilverJobConfig,
 }
 
 def load_and_parse_config(
     config_path: str,
-    # runtime_args: Namespace #Update here
+    runtime_args: Namespace #Update here
 ):
     config_str = load_yaml_config_from_path_as_str(config_path) #RETURN CONFIG STRING
 
     jinja_template = Template(config_str) # Use when we need to import library and allow jinja template do parser
     allow_jinja_context = {
-        # "runtime_args": runtime_args,
+        "runtime_args": runtime_args,
         "timedelta": timedelta,
         "str": str,
         "datetime": datetime,
