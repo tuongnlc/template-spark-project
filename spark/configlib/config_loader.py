@@ -34,8 +34,9 @@ def load_and_parse_config(
     return parse_render_config
 
 def parse_config(config_dict: str) -> Any:
-    print(config_dict["kind"])
-    # print(CONFIG_PARSER_MAP[config_dict["kind"]])
+    if "kind" not in config_dict:
+        raise ValueError("Config kind is required.")
+        
     if config_dict["kind"] not in CONFIG_PARSER_MAP:
         raise ValueError(f"Unknown config kind: {config_dict['kind']}")
     
@@ -44,7 +45,6 @@ def parse_config(config_dict: str) -> Any:
 
     # Convert dict to data_class
     parsed_config = from_dict(data_class=config_class, data=config_dict["spec"])
-    print(parsed_config)
     return parsed_config
 
 def load_yaml_config_from_path_as_str(path: str) -> str:

@@ -2,5 +2,8 @@
 name = "template_spark_project"
 version = "0.1.0"
 description = "Spark Template Project"
-dependencies = ["jinja2 (==3.1.6)", "pyyaml (==6.0.3)", "dacite (==1.9.2)"]
+dependencies = ["jinja2 (==3.1.6)", "pyyaml (==6.0.3)", "dacite (==1.9.2)", "pytest (==9.0.2)"]
 requires-python = ">=3.13"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
