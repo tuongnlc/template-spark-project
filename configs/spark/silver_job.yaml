@@ -1,0 +1,4 @@
+---
+kind: SilverJobConfig
+spec:
+  source_s3_bucket: "s3://template-spark-project"
