@@ -4,10 +4,11 @@ from typing import Optional
 from spark.configlib.parser.silver_job import SilverJobConfig
 from spark.utils.jobargs import job_args_utils
 import os
+from spark.sparklib.spark import start_spark
 
 def main(
     args: Namespace,
-    # spark_session: Optional[SparkSession] = None
+    spark_session: Optional[SparkSession] = None
 ):  
     if not isinstance(args.job_config, SilverJobConfig): # Check job_config is of type SilverJobConfig  
         raise ValueError("job_config must be of type SilverJobConfig")
@@ -16,6 +17,19 @@ def main(
         "spark.sql.parquet.compression.codec": "snappy",
     }
 
+    # spark, logger = start_spark(spark_config)
+
+    spark = start_spark(
+        app_name="SilverJob",
+        spark_config=spark_config,
+        spark_session=spark_session
+    )
+
+    s3_extractor = S3Extractor(spark)
+
+    # s3_extractor.extract()
+
+    # s3_extractor.write()
 
 if __name__ == "__main__":
     args = job_args_utils()
