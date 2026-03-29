@@ -5,6 +5,14 @@ from spark.configlib.parser.silver_job import SilverJobConfig
 from spark.utils.jobargs import job_args_utils
 import os
 from spark.sparklib.spark import start_spark
+# from spark.extractors.s3_extractor import S3Extractor
+from spark.sparklib.extractor.s3 import S3Extractor
+from spark.sql import SparkSession
+
+from spark.sparklib.loader.delta import DeltaLoader
+from spark.template.silver_layer.silverr_job import SilverJob
+
+
 
 def main(
     args: Namespace,
@@ -19,17 +27,48 @@ def main(
 
     # spark, logger = start_spark(spark_config)
 
-    spark = start_spark(
+    spark, logger = start_spark(
         app_name="SilverJob",
         spark_config=spark_config,
-        spark_session=spark_session
+        spark_session=spark_session,
+        enable_log4j=True,
+        enable_hive_support=True,
     )
 
-    s3_extractor = S3Extractor(spark)
+    s3_extractor = S3Extractor(
+        spark=spark,
+        logger=logger,
+        s3_paths=args.job_config.s3_paths,
+        s3_client_kwargs=args.job_config.s3_client_kwargs,
+    )
 
-    # s3_extractor.extract()
+    transform_class = [
+        tf_config.python_class(logger=logger, **tf_config.kwargs)
+        for tf_config in args.job_config.transform_configs
+    ]
 
-    # s3_extractor.write()
+    delta_loader = DeltaLoader(
+        spark=spark,
+        logger=logger,
+        write_mode='overwrite',
+        hive_table_name=args.job_config.hive_table_name,
+        delta_table_path=args.job_config.delta_table_path,
+        overwrite_partition=True,
+        options={
+            "delta.columnMapping.mode": "name",
+            "overwriteSchema": "true",
+        }
+    )
+
+    job: SilverJob = SilverJob(
+        spark=spark,
+        logger=logger,
+        s3_extractor=s3_extractor,
+        transform_class=transform_class,
+        delta_loader=delta_loader,
+        cfg=args.job_config,
+    )
+    job.run()
 
 if __name__ == "__main__":
     args = job_args_utils()

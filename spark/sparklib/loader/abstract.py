@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod
-
+from spark.sparklib.logging import CustomLogger
 from pyspark.sql import DataFrame, SparkSession
 
-from spark.logging import CustomLogger
 
-
-class Extractor(ABC):
+class Loader(ABC):
     def __init__(self, logger: CustomLogger, spark: SparkSession):
         self.logger = logger
         self.spark = spark
 
     @abstractmethod
-    def read(self, *args, **kwargs) -> DataFrame:
+    def load(self, df: DataFrame, *args, **kwargs) -> DataFrame:
+        pass
+
+    @abstractmethod
+    def optimize(self) -> None:
         pass

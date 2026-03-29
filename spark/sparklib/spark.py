@@ -2,6 +2,8 @@ from pyspark.sql import SparkSession
 from typing import Optional
 from os import environ
 from delta import configure_spark_with_delta_pip
+from spark.sparklib.logging import CustomLogger
+
 
 
 def start_spark(
@@ -51,6 +53,6 @@ def start_spark(
     else:
         spark_sess = spark_session
 
-    spark_logger = None #Update here
+    spark_logger = logging.CustomLogger(spark_sess, enable_log4j=enable_log4j)
     spark_sess.sparkContext.setLogLevel("INFO")
     return spark_sess, spark_logger
